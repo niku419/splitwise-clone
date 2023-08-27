@@ -2,9 +2,11 @@ package com.nickyall.splitwise.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 @Document(collection = "expenses")
 public class Expense {
 
@@ -31,19 +33,19 @@ public class Expense {
         this.payerId = payerId;
     }
 
-    public List<String> getParticipantIds() {
-        return participantIds;
+    public double getAmount() {
+        return amount;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public double getAmount() {
-        return amount;
-    }
-
     public String getPayerId() {
         return payerId;
+    }
+
+    public List<String> getParticipantIds() {
+        return participantIds;
     }
 }

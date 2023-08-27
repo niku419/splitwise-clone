@@ -2,6 +2,7 @@ package com.nickyall.splitwise.service;
 
 import com.nickyall.splitwise.model.User;
 import com.nickyall.splitwise.repository.UserRepository;
+import com.nickyall.splitwise.requests.CreateUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User createUser(final User user) {
+    public User createUser(final CreateUserRequest userRequest) {
+        final User user = new User();
+        user.setEmailId(userRequest.getEmailId());
+        user.setName(userRequest.getName());
+        user.setPhoneNumber(userRequest.getPhoneNumber());
         return userRepository.save(user);
     }
 }

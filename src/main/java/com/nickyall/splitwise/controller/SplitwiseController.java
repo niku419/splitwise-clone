@@ -3,22 +3,23 @@ package com.nickyall.splitwise.controller;
 
 import com.nickyall.splitwise.model.Expense;
 import com.nickyall.splitwise.model.Group;
+import com.nickyall.splitwise.model.Role;
 import com.nickyall.splitwise.model.User;
 import com.nickyall.splitwise.requests.CreateExpenseRequest;
 import com.nickyall.splitwise.requests.CreateGroupRequest;
 import com.nickyall.splitwise.requests.CreateUserRequest;
 import com.nickyall.splitwise.service.ExpenseService;
 import com.nickyall.splitwise.service.GroupService;
+import com.nickyall.splitwise.service.RoleService;
 import com.nickyall.splitwise.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/splitwise")
 public class SplitwiseController {
 
     @Autowired
@@ -27,12 +28,15 @@ public class SplitwiseController {
     ExpenseService expenseService;
     @Autowired
     GroupService groupService;
+    @Autowired
+    RoleService roleService;
 
     @GetMapping(value = "/")
     public String home() {
         return "Welcome to Splitwise";
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping(value = "/getUsers")
     public List<User> getUsers() {
         return userService.findAll();
@@ -50,9 +54,7 @@ public class SplitwiseController {
 
     @PostMapping(value = "/createUser")
     public User createUser(@RequestBody CreateUserRequest user) {
-        User user1 = userService.createUser(user);
-        System.out.println("sonkjdn" + user1);
-        return user1;
+        return userService.createUser(user);
     }
 
     @PostMapping(value = "/createExpense")
@@ -65,4 +67,13 @@ public class SplitwiseController {
         return groupService.createGroup(group);
     }
 
+    @PostMapping(value = "/createRole")
+    public Role createRole(@RequestBody Role role) {
+        return roleService.createRole(role);
+    }
+
+    @GetMapping(value = "/getRoles")
+    public List<Role> getRoles() {
+        return roleService.findAll();
+    }
 }

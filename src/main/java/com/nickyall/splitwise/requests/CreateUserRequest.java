@@ -3,7 +3,6 @@ package com.nickyall.splitwise.requests;
 import java.util.Set;
 
 import jakarta.validation.constraints.*;
-import org.springframework.format.annotation.NumberFormat;
 
 public class CreateUserRequest {
 

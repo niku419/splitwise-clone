@@ -1,21 +1,19 @@
 package com.nickyall.splitwise.model;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.HashMap;
 
 @Component
 @Document(collection = "expenses")
 public class Expense {
 
-    @Id
     private String id;
     private String description;
     private String payerId;
     private double amount;
-    private List<String> participantIds;
+    private HashMap<User, Double> participants;
 
     public void setAmount(double amount) {
         this.amount = amount;
@@ -25,12 +23,16 @@ public class Expense {
         this.description = description;
     }
 
-    public void setParticipantIds(List<String> participantIds) {
-        this.participantIds = participantIds;
+    public void setParticipants(HashMap<User, Double> participants) {
+        this.participants = participants;
     }
 
     public void setPayerId(String payerId) {
         this.payerId = payerId;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public double getAmount() {
@@ -45,7 +47,11 @@ public class Expense {
         return payerId;
     }
 
-    public List<String> getParticipantIds() {
-        return participantIds;
+    public HashMap<User, Double> getParticipants() {
+        return participants;
+    }
+
+    public String getId() {
+        return id;
     }
 }

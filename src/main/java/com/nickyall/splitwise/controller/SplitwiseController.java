@@ -75,4 +75,10 @@ public class SplitwiseController {
     public List<Role> getRoles() {
         return roleService.findAll();
     }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/user/{userId}/groups")
+    public List<Group> getUserGroups(@PathVariable String userId) {
+        return groupService.getUserGroups(userId);
+    }
 }

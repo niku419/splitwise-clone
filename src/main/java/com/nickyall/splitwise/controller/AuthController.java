@@ -115,6 +115,23 @@ public class AuthController {
         }
         user.setRoles(roles);
         userService.createUser(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signUpRequest.getEmailId(), signUpRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
+        List<String> dbRoles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body(new UserInfoResponse(userDetails.getId(),
+                        userDetails.getEmailId(),
+                        userDetails.getPhoneNumber(),
+                        userDetails.getName(),
+                        dbRoles));
     }
 }

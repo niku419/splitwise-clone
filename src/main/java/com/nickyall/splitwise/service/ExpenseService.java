@@ -19,7 +19,8 @@ public class ExpenseService {
         expense.setPayerId(expenseRequest.getPayerId());
         expense.setAmount(expenseRequest.getAmount());
         expense.setDescription(expenseRequest.getDescription());
-        expense.setParticipantIds(expenseRequest.getParticipantIds());
+        expense.setParticipants(expenseRequest.getParticipants());
+        expense.setId(expenseRequest.getId());
         return expenseRepository.save(expense);
     }
 

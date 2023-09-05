@@ -1,15 +1,18 @@
 package com.nickyall.splitwise.requests;
 
-import java.util.List;
+import com.nickyall.splitwise.model.User;
+
+import java.util.HashMap;
 
 public class CreateExpenseRequest {
+    private String id;
     private String description;
     private String payerId;
     private double amount;
-    private List<String> participantIds;
+    private HashMap<User, Double> participants;
 
-    public List<String> getParticipantIds() {
-        return participantIds;
+    public HashMap<User, Double> getParticipants() {
+        return participants;
     }
 
     public String getDescription() {
@@ -22,5 +25,9 @@ public class CreateExpenseRequest {
 
     public String getPayerId() {
         return payerId;
+    }
+
+    public String getId() {
+        return id;
     }
 }

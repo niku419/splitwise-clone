@@ -13,6 +13,7 @@ public class Group {
     private String id;
     private String name;
     private List<String> memberIds;
+    private List<Expense> expenses;
 
     public void setName(String name) {
         this.name = name;
@@ -20,6 +21,18 @@ public class Group {
 
     public void setMemberIds(List<String> memberIds) {
         this.memberIds = memberIds;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setExpenses(List<Expense> expenses) {
+        this.expenses = expenses;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public List<String> getMemberIds() {
@@ -30,4 +43,7 @@ public class Group {
         return name;
     }
 
+    public List<Expense> getExpenses() {
+        return expenses;
+    }
 }

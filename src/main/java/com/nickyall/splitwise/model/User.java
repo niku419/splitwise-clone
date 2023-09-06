@@ -31,6 +31,7 @@ public class User {
     @DBRef
     private Set<Role> roles = new HashSet<>();
     private List<String> groupIds;
+    private List<String> expensesIds;
 
     public String getId() {
         return id;
@@ -53,6 +54,11 @@ public class User {
     public List<String> getGroupIds() {
         return groupIds;
     }
+
+    public List<String> getExpensesIds() {
+        return expensesIds;
+    }
+
     public void setGroupIds(List<String> groupIds) {
         this.groupIds = groupIds;
     }
@@ -70,5 +76,9 @@ public class User {
     }
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public void setExpensesIds(List<String> expensesIds) {
+        this.expensesIds = expensesIds;
     }
 }

@@ -1,5 +1,6 @@
 package com.nickyall.splitwise.service;
 
+import com.nickyall.splitwise.model.Expense;
 import com.nickyall.splitwise.model.User;
 import com.nickyall.splitwise.repository.UserRepository;
 import com.nickyall.splitwise.requests.CreateGroupRequest;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -16,6 +18,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private GroupService groupService;
+    @Autowired
+    private ExpenseService expenseService;
 
     private static final String NON_GROUP_EXPENSES_GROUP_NAME = "Non group Expneses";
 

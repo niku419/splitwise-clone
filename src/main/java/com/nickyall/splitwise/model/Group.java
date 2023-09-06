@@ -13,7 +13,7 @@ public class Group {
     private String id;
     private String name;
     private List<String> memberIds;
-    private List<Expense> expenses;
+    private List<String> expenses;
 
     public void setName(String name) {
         this.name = name;
@@ -27,7 +27,7 @@ public class Group {
         this.id = id;
     }
 
-    public void setExpenses(List<Expense> expenses) {
+    public void setExpenses(List<String> expenses) {
         this.expenses = expenses;
     }
 
@@ -43,7 +43,7 @@ public class Group {
         return name;
     }
 
-    public List<Expense> getExpenses() {
+    public List<String> getExpenses() {
         return expenses;
     }
 }

@@ -6,6 +6,7 @@ import com.nickyall.splitwise.model.Role;
 import com.nickyall.splitwise.model.User;
 import com.nickyall.splitwise.requests.CreateExpenseRequest;
 import com.nickyall.splitwise.requests.CreateGroupRequest;
+import com.nickyall.splitwise.response.GroupsResponse;
 import com.nickyall.splitwise.service.ExpenseService;
 import com.nickyall.splitwise.service.GroupService;
 import com.nickyall.splitwise.service.RoleService;
@@ -78,7 +79,13 @@ public class SplitwiseController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/user/{userId}/groups")
-    public List<Group> getUserGroups(@PathVariable String userId) {
+    public List<GroupsResponse> getUserGroups(@PathVariable String userId) {
         return groupService.getUserGroups(userId);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/user/{userId}/expenses")
+    public List<Expense> getUserExpenses(@PathVariable String userId) {
+        return expenseService.getUserExpenses(userId);
     }
 }

@@ -1,14 +1,12 @@
 package com.nickyall.splitwise.requests;
 
-import com.nickyall.splitwise.model.Expense;
-
 import java.util.List;
 
 public class CreateGroupRequest {
     private String id;
     private String name;
     private List<String> memberIds;
-    private List<Expense> expenses;
+    private List<String> expenses;
 
     public void setName(String name) {
         this.name = name;
@@ -22,7 +20,7 @@ public class CreateGroupRequest {
         return name;
     }
 
-    public List<Expense> getExpenses() {
+    public List<String> getExpenses() {
         return expenses;
     }
 

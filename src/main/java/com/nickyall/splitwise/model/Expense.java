@@ -13,7 +13,8 @@ public class Expense {
     private String description;
     private String payerId;
     private double amount;
-    private HashMap<User, Double> participants;
+    private HashMap<String, Double> participants;
+    private String groupId;
 
     public void setAmount(double amount) {
         this.amount = amount;
@@ -23,7 +24,7 @@ public class Expense {
         this.description = description;
     }
 
-    public void setParticipants(HashMap<User, Double> participants) {
+    public void setParticipants(HashMap<String, Double> participants) {
         this.participants = participants;
     }
 
@@ -33,6 +34,10 @@ public class Expense {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public double getAmount() {
@@ -47,11 +52,15 @@ public class Expense {
         return payerId;
     }
 
-    public HashMap<User, Double> getParticipants() {
+    public HashMap<String, Double> getParticipants() {
         return participants;
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getGroupId() {
+        return groupId;
     }
 }

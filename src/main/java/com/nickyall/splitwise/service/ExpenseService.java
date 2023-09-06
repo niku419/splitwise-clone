@@ -44,6 +44,7 @@ public class ExpenseService {
                     expenses = new ArrayList<>();
                 }
                 expenses.add(expense.getId());
+                optionalUser.get().setExpensesIds(expenses);
                 userRepository.save(optionalUser.get());
             }
         }

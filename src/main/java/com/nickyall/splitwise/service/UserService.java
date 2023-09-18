@@ -1,7 +1,9 @@
 package com.nickyall.splitwise.service;
 
 import com.nickyall.splitwise.model.Expense;
+import com.nickyall.splitwise.model.Group;
 import com.nickyall.splitwise.model.User;
+import com.nickyall.splitwise.repository.GroupRepository;
 import com.nickyall.splitwise.repository.UserRepository;
 import com.nickyall.splitwise.requests.CreateGroupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private GroupRepository groupRepository;
+    @Autowired
     private GroupService groupService;
     @Autowired
     private ExpenseService expenseService;
@@ -28,13 +32,16 @@ public class UserService {
     }
 
     public void createUser(final User user) {
-        CreateGroupRequest groupRequest = new CreateGroupRequest();
-        groupRequest.setName(NON_GROUP_EXPENSES_GROUP_NAME);
-        groupRequest.setId(user.getId());
-        groupService.createGroup(groupRequest);
+        Group group = new Group();
+        List<String> memberIds = new ArrayList<>();
         List<String> groupIds = new ArrayList<>();
         userRepository.save(user);
-        groupIds.add(user.getId());
+        memberIds.add(user.getId());
+        group.setName(NON_GROUP_EXPENSES_GROUP_NAME);
+        group.setMemberIds(memberIds);
+        group.setExpenses(new ArrayList<>());
+        groupRepository.save(group);
+        groupIds.add(group.getId());
         user.setGroupIds(groupIds);
         userRepository.save(user);
     }

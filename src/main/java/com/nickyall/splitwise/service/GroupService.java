@@ -27,21 +27,23 @@ public class GroupService {
 
     public Group createGroup(final CreateGroupRequest groupRequest) {
         final Group group = new Group();
-        group.setName(groupRequest.getName());
-        group.setMemberIds(groupRequest.getMemberIds());
-        group.setExpenses(groupRequest.getExpenses());
         groupRepository.save(group);
-        if (group.getMemberIds() != null) {
-            for (final String userId: group.getMemberIds()) {
-                final Optional<User> user = userRepository.findById(userId);
-                if (user.isPresent()) {
-                    final List<String> groupIds = user.get().getGroupIds();
+        List<String> memberIds = new ArrayList<>();
+        if (groupRequest.getMemberEmailIds() != null) {
+            for (final String emailId: groupRequest.getMemberEmailIds()) {
+                final User user = userRepository.findByEmailId(emailId);
+                if (user != null) {
+                    final List<String> groupIds = user.getGroupIds();
+                    memberIds.add(user.getEmailId());
                     groupIds.add(group.getId());
-                    user.get().setGroupIds(groupIds);
-                    userRepository.save(user.get());
+                    user.setGroupIds(groupIds);
+                    userRepository.save(user);
                 }
             }
         }
+        group.setName(groupRequest.getName());
+        group.setMemberIds(memberIds);
+        group.setExpenses(new ArrayList<>());
         return groupRepository.save(group);
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 public class CreateGroupRequest {
     private String id;
     private String name;
-    private List<String> memberIds;
+    private List<String> memberEmailIds;
     private List<String> expenses;
 
     public void setName(String name) {
@@ -24,8 +24,8 @@ public class CreateGroupRequest {
         return expenses;
     }
 
-    public List<String> getMemberIds() {
-        return memberIds;
+    public List<String> getMemberEmailIds() {
+        return memberEmailIds;
     }
 
     public String getId() {

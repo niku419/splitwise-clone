@@ -7,13 +7,11 @@ import com.nickyall.splitwise.repository.ExpenseRepository;
 import com.nickyall.splitwise.repository.GroupRepository;
 import com.nickyall.splitwise.repository.UserRepository;
 import com.nickyall.splitwise.requests.CreateExpenseRequest;
-import com.nickyall.splitwise.response.GroupsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ExpenseService {
@@ -29,23 +27,36 @@ public class ExpenseService {
 
     public Expense createExpense(final CreateExpenseRequest expenseRequest) {
         final Expense expense = new Expense();
-        expense.setPayerId(expenseRequest.getPayerId());
+        final User payerUser = userRepository.findByEmailId(expenseRequest.getPayerEmailId());
+        if (payerUser == null) {
+            throw new UsernameNotFoundException("Payer not found");
+        }
+        HashMap<String, Double> participants = new HashMap<>();
+        for (Map.Entry<String, Double> entry : expenseRequest.getParticipants().entrySet()) {
+            String participantEmail = entry.getKey();
+            Double amount = entry.getValue();
+            final User participant = userRepository.findByEmailId(participantEmail);
+            if (participant != null) {
+                participants.put(participant.getEmailId(), amount);
+            }
+        }
+        expense.setPayerId(payerUser.getId());
         expense.setAmount(expenseRequest.getAmount());
         expense.setDescription(expenseRequest.getDescription());
-        expense.setParticipants(expenseRequest.getParticipants());
+        expense.setParticipants(participants);
         expense.setGroupId(expenseRequest.getGroupId());
         expenseRepository.save(expense);
         Optional<Group> group = groupRepository.findById(expenseRequest.getGroupId());
-        for (final String participant: expenseRequest.getParticipants().keySet()) {
-            Optional<User> optionalUser = userRepository.findById(participant);
-            if (optionalUser.isPresent()) {
-                List<String> expenses = optionalUser.get().getExpensesIds();
+        for (final String participant: participants.keySet()) {
+            User user = userRepository.findByEmailId(participant);
+            if (user != null) {
+                List<String> expenses = user.getExpensesIds();
                 if (expenses == null) {
                     expenses = new ArrayList<>();
                 }
                 expenses.add(expense.getId());
-                optionalUser.get().setExpensesIds(expenses);
-                userRepository.save(optionalUser.get());
+                user.setExpensesIds(expenses);
+                userRepository.save(user);
             }
         }
         if (group.isPresent()) {

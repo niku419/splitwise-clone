@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class CreateExpenseRequest {
     private String description;
-    private String payerId;
+    private String payerEmailId;
     private double amount;
     private HashMap<String, Double> participants;
     private String groupId;
@@ -21,8 +21,8 @@ public class CreateExpenseRequest {
         return amount;
     }
 
-    public String getPayerId() {
-        return payerId;
+    public String getPayerEmailId() {
+        return payerEmailId;
     }
 
     public String getGroupId() {

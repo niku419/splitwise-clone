@@ -27,15 +27,16 @@ public class ExpenseService {
 
     public Expense createExpense(final CreateExpenseRequest expenseRequest) {
         final Expense expense = new Expense();
-        final User payerUser = userRepository.findByEmailId(expenseRequest.getPayerEmailId());
+        String originalEmail = expenseRequest.getPayerEmailId().replace(".", "_");
+        final User payerUser = userRepository.findByEmailId(originalEmail);
         if (payerUser == null) {
             throw new UsernameNotFoundException("Payer not found");
         }
         HashMap<String, Double> participants = new HashMap<>();
         for (Map.Entry<String, Double> entry : expenseRequest.getParticipants().entrySet()) {
-            String participantEmail = entry.getKey();
-            Double amount = entry.getValue();
-            final User participant = userRepository.findByEmailId(participantEmail);
+            String originalParticipantEmail = entry.getKey().replace(".", "_");
+            final Double amount = entry.getValue();
+            final User participant = userRepository.findByEmailId(originalParticipantEmail);
             if (participant != null) {
                 participants.put(participant.getEmailId(), amount);
             }
@@ -48,7 +49,8 @@ public class ExpenseService {
         expenseRepository.save(expense);
         Optional<Group> group = groupRepository.findById(expenseRequest.getGroupId());
         for (final String participant: participants.keySet()) {
-            User user = userRepository.findByEmailId(participant);
+            String originalParticipantEmail = participant.replace(".", "_");
+            User user = userRepository.findByEmailId(originalParticipantEmail);
             if (user != null) {
                 List<String> expenses = user.getExpensesIds();
                 if (expenses == null) {

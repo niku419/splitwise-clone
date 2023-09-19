@@ -6,6 +6,7 @@ import com.nickyall.splitwise.model.User;
 import java.util.List;
 
 public class GroupsResponse {
+    private String id;
     private String name;
     private List<User> users;
     private List<Expense> expenses;
@@ -22,6 +23,10 @@ public class GroupsResponse {
         return users;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public void setExpenses(List<Expense> expenses) {
         this.expenses = expenses;
     }
@@ -32,5 +37,9 @@ public class GroupsResponse {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

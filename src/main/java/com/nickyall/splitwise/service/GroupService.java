@@ -50,7 +50,6 @@ public class GroupService {
     public List<GroupsResponse> getUserGroups(final String userId) {
         final Optional<User> optionalUser = userRepository.findById(userId);
         List<GroupsResponse> groupsResponses = new ArrayList<>();
-        List<Group> groups = new ArrayList<>();
         if (optionalUser.isPresent()) {
             final User user = optionalUser.get();
             List<String> userGroupIds = user.getGroupIds();
@@ -75,6 +74,7 @@ public class GroupService {
                             groupsResponse.setExpenses(expenses);
                             groupsResponse.setUsers(users);
                             groupsResponse.setName(group.get().getName());
+                            groupsResponse.setId(group.get().getId());
                         }
                     }
                 }
@@ -86,5 +86,8 @@ public class GroupService {
 
     public List<Group> findAll(){
         return groupRepository.findAll();
+    }
+    public void save(Group group) {
+        groupRepository.save(group);
     }
 }

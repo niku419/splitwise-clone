@@ -1,25 +1,19 @@
 package com.nickyall.splitwise.service;
 
-import com.nickyall.splitwise.model.Expense;
 import com.nickyall.splitwise.model.Group;
 import com.nickyall.splitwise.model.User;
-import com.nickyall.splitwise.repository.GroupRepository;
 import com.nickyall.splitwise.repository.UserRepository;
-import com.nickyall.splitwise.requests.CreateGroupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private GroupRepository groupRepository;
     @Autowired
     private GroupService groupService;
     @Autowired
@@ -40,7 +34,7 @@ public class UserService {
         group.setName(NON_GROUP_EXPENSES_GROUP_NAME);
         group.setMemberIds(memberIds);
         group.setExpenses(new ArrayList<>());
-        groupRepository.save(group);
+        groupService.save(group);
         groupIds.add(group.getId());
         user.setGroupIds(groupIds);
         userRepository.save(user);
@@ -48,5 +42,9 @@ public class UserService {
 
     public boolean existsByEmailId(String emailId) {
         return userRepository.existsByEmailId(emailId);
+    }
+
+    public User findByEmailId(String emailId) {
+        return userRepository.findByEmailId(emailId);
     }
 }

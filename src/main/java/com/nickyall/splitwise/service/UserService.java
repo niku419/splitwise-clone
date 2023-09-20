@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -16,8 +17,6 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private GroupService groupService;
-    @Autowired
-    private ExpenseService expenseService;
 
     private static final String NON_GROUP_EXPENSES_GROUP_NAME = "Non group Expneses";
 
@@ -44,7 +43,15 @@ public class UserService {
         return userRepository.existsByEmailId(emailId);
     }
 
-    public User findByEmailId(String emailId) {
-        return userRepository.findByEmailId(emailId);
+    public Optional<User> findByEmailId(String emailId) {
+        return userRepository.findByEmailIdExact(emailId);
+    }
+
+    public Optional<User> findById(String id) {
+        return userRepository.findById(id);
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
     }
 }

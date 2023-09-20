@@ -27,21 +27,18 @@ public class ExpenseService {
 
     public Expense createExpense(final CreateExpenseRequest expenseRequest) {
         final Expense expense = new Expense();
-        String originalEmail = expenseRequest.getPayerEmailId().replace(".", "_");
-        final User payerUser = userRepository.findByEmailId(originalEmail);
-        if (payerUser == null) {
+        final Optional<User> payerUser = userRepository.findByEmailIdExact(expenseRequest.getPayerEmailId());
+        if (payerUser.isEmpty()) {
             throw new UsernameNotFoundException("Payer not found");
         }
         HashMap<String, Double> participants = new HashMap<>();
         for (Map.Entry<String, Double> entry : expenseRequest.getParticipants().entrySet()) {
-            String originalParticipantEmail = entry.getKey().replace(".", "_");
-            final Double amount = entry.getValue();
-            final User participant = userRepository.findByEmailId(originalParticipantEmail);
-            if (participant != null) {
-                participants.put(participant.getEmailId(), amount);
-            }
+            String participantEmail = entry.getKey();
+            Double amount = entry.getValue();
+            final Optional<User> participant = userRepository.findByEmailIdExact(participantEmail);
+            participant.ifPresent(user -> participants.put(user.getEmailId().replace(".", "_"), amount));
         }
-        expense.setPayerId(payerUser.getId());
+        expense.setPayerId(payerUser.get().getId());
         expense.setAmount(expenseRequest.getAmount());
         expense.setDescription(expenseRequest.getDescription());
         expense.setParticipants(participants);
@@ -49,16 +46,15 @@ public class ExpenseService {
         expenseRepository.save(expense);
         Optional<Group> group = groupRepository.findById(expenseRequest.getGroupId());
         for (final String participant: participants.keySet()) {
-            String originalParticipantEmail = participant.replace(".", "_");
-            User user = userRepository.findByEmailId(originalParticipantEmail);
-            if (user != null) {
-                List<String> expenses = user.getExpensesIds();
+            Optional<User> user = userRepository.findByEmailIdExact(participant);
+            if (user.isPresent()) {
+                List<String> expenses = user.get().getExpensesIds();
                 if (expenses == null) {
                     expenses = new ArrayList<>();
                 }
                 expenses.add(expense.getId());
-                user.setExpensesIds(expenses);
-                userRepository.save(user);
+                user.get().setExpensesIds(expenses);
+                userRepository.save(user.get());
             }
         }
         if (group.isPresent()) {
@@ -69,7 +65,7 @@ public class ExpenseService {
             expenses.add(expense.getId());
             groupRepository.save(group.get());
         }
-        return expense;
+        return refactorParticipantEmailForResponse(expense);
     }
 
     public List<Expense> getUserExpenses(final String userId) {
@@ -80,7 +76,7 @@ public class ExpenseService {
             if (expenseIds != null) {
                 for (final String expenseId: expenseIds) {
                     Optional<Expense> expense = expenseRepository.findById(expenseId);
-                    expenses.add(expense.get());
+                    expense.ifPresent(value -> expenses.add(refactorParticipantEmailForResponse(value)));
                 }
             }
         }
@@ -89,5 +85,19 @@ public class ExpenseService {
 
     public List<Expense> findAll(){
         return expenseRepository.findAll();
+    }
+
+    public Optional<Expense> findById(String id) {
+        return expenseRepository.findById(id);
+    }
+
+    public Expense refactorParticipantEmailForResponse(Expense expense) {
+        HashMap<String, Double> participants = new HashMap<>();
+        for (final Map.Entry<String, Double> participant: expense.getParticipants().entrySet()) {
+            final String key = participant.getKey().replace("_", ".");
+            participants.put(key, participant.getValue());
+        }
+        expense.setParticipants(participants);
+        return expense;
     }
 }

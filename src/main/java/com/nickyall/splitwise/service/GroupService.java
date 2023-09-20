@@ -31,13 +31,13 @@ public class GroupService {
         List<String> memberIds = new ArrayList<>();
         if (groupRequest.getMemberEmailIds() != null) {
             for (final String emailId: groupRequest.getMemberEmailIds()) {
-                final User user = userRepository.findByEmailId(emailId);
-                if (user != null) {
-                    final List<String> groupIds = user.getGroupIds();
-                    memberIds.add(user.getEmailId());
+                final Optional<User> user = userRepository.findByEmailIdExact(emailId);
+                if (user.isPresent()) {
+                    final List<String> groupIds = user.get().getGroupIds();
+                    memberIds.add(user.get().getEmailId());
                     groupIds.add(group.getId());
-                    user.setGroupIds(groupIds);
-                    userRepository.save(user);
+                    user.get().setGroupIds(groupIds);
+                    userRepository.save(user.get());
                 }
             }
         }
@@ -87,6 +87,11 @@ public class GroupService {
     public List<Group> findAll(){
         return groupRepository.findAll();
     }
+
+    public Optional<Group> findById(String id) {
+        return groupRepository.findById(id);
+    }
+
     public void save(Group group) {
         groupRepository.save(group);
     }

@@ -70,6 +70,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>splitwise-backend-docker</finalName>
 	</build>
-
 </project>

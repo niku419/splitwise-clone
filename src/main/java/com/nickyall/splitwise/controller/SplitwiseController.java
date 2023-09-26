@@ -4,6 +4,7 @@ import com.nickyall.splitwise.model.Expense;
 import com.nickyall.splitwise.model.Group;
 import com.nickyall.splitwise.model.Role;
 import com.nickyall.splitwise.model.User;
+import com.nickyall.splitwise.requests.AddUsersToGroupRequest;
 import com.nickyall.splitwise.requests.CreateExpenseRequest;
 import com.nickyall.splitwise.requests.CreateGroupRequest;
 import com.nickyall.splitwise.response.GroupsResponse;
@@ -12,8 +13,12 @@ import com.nickyall.splitwise.service.GroupService;
 import com.nickyall.splitwise.service.RoleService;
 import com.nickyall.splitwise.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -35,57 +40,63 @@ public class SplitwiseController {
         return "Welcome to Splitwise";
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping(value = "/getUsers")
     public List<User> getUsers() {
         return userService.findAll();
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping(value = "/getExpenses")
     public List<Expense> getExpenses() {
         return expenseService.findAll();
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping(value = "/getGroups")
     public List<Group> getGroups() {
         return groupService.findAll();
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping(value = "/createExpense")
     public Expense createExpense(@RequestBody CreateExpenseRequest expense) {
         return expenseService.createExpense(expense);
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping(value = "/createGroup")
     public Group createGroup(@RequestBody CreateGroupRequest group) {
         return groupService.createGroup(group);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/createRole")
     public Role createRole(@RequestBody Role role) {
         return roleService.createRole(role);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/getRoles")
     public List<Role> getRoles() {
         return roleService.findAll();
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/user/{userId}/groups")
     public List<GroupsResponse> getUserGroups(@PathVariable String userId) {
         return groupService.getUserGroups(userId);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/group/{groupId}/users")
+    public List<User> getGroupUsers(@PathVariable String groupId) {
+        return groupService.getGroupUsers(groupId);
+    }
+
     @GetMapping(value = "/user/{userId}/expenses")
     public List<Expense> getUserExpenses(@PathVariable String userId) {
         return expenseService.getUserExpenses(userId);
+    }
+
+    @GetMapping(value = "/groups/{groupId}/expenses")
+    public List<Expense> getGroupExpenses(@PathVariable String groupId) {
+        return expenseService.getGroupExpenses(groupId);
+    }
+
+    @PostMapping(value = "/groups/{groupId}/addUsers")
+    public void addUsersToGroup(@RequestBody AddUsersToGroupRequest addUsersToGroupRequest) {
+        groupService.addUsersToGroup(addUsersToGroupRequest);
     }
 }

@@ -83,6 +83,21 @@ public class ExpenseService {
         return expenses;
     }
 
+    public List<Expense> getGroupExpenses(final String groupId) {
+        final Optional<Group> optionalGroup = groupRepository.findById(groupId);
+        List<Expense> expenses = new ArrayList<>();
+        if (optionalGroup.isPresent()) {
+            List<String> expenseIds = optionalGroup.get().getExpenses();
+            if (expenseIds != null) {
+                for (final String expenseId: expenseIds) {
+                    Optional<Expense> expense = expenseRepository.findById(expenseId);
+                    expense.ifPresent(value -> expenses.add(refactorParticipantEmailForResponse(value)));
+                }
+            }
+        }
+        return expenses;
+    }
+
     public List<Expense> findAll(){
         return expenseRepository.findAll();
     }

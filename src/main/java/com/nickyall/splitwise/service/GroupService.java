@@ -6,6 +6,7 @@ import com.nickyall.splitwise.model.User;
 import com.nickyall.splitwise.repository.ExpenseRepository;
 import com.nickyall.splitwise.repository.GroupRepository;
 import com.nickyall.splitwise.repository.UserRepository;
+import com.nickyall.splitwise.requests.AddUsersToGroupRequest;
 import com.nickyall.splitwise.requests.CreateGroupRequest;
 import com.nickyall.splitwise.response.GroupsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,38 @@ public class GroupService {
         group.setMemberIds(memberIds);
         group.setExpenses(new ArrayList<>());
         return groupRepository.save(group);
+    }
+
+    public List<User> getGroupUsers(final String groupId) {
+        final Optional<Group> optionalGroup = groupRepository.findById(groupId);
+        List<User> users = new ArrayList<>();
+        if (optionalGroup.isPresent()) {
+            final Group group = optionalGroup.get();
+            List<String> emailIds = group.getMemberIds();
+            if (emailIds != null) {
+                for (final String emailId: emailIds) {
+                    Optional<User> user = userRepository.findByEmailIdExact(emailId);
+                    user.ifPresent(value -> users.add(user.get()));
+                }
+            }
+        }
+        return users;
+    }
+
+    public void addUsersToGroup(final AddUsersToGroupRequest addUsersToGroupRequest) {
+        final Optional<Group> optionalGroup = groupRepository.findById(addUsersToGroupRequest.getGroupId());
+        if (optionalGroup.isPresent()) {
+            List<String> groupMembers = optionalGroup.get().getMemberIds();
+            List<String> emailIds = addUsersToGroupRequest.getMemberEmailIds();
+            if (emailIds != null) {
+                for (final String emailId: emailIds) {
+                    Optional<User> user = userRepository.findByEmailIdExact(emailId);
+                    user.ifPresent(value -> groupMembers.add(user.get().getEmailId()));
+                }
+            }
+            optionalGroup.get().setMemberIds(groupMembers);
+            groupRepository.save(optionalGroup.get());
+        }
     }
 
     public List<GroupsResponse> getUserGroups(final String userId) {

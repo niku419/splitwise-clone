@@ -34,6 +34,10 @@ public class JwtUtils {
         return ResponseCookie.from(jwtCookie, jwt).path("/").maxAge(24 * 60 * 60).httpOnly(true).build();
     }
 
+    public String getToken(String emailId) {
+        return generateTokenFromEmail(emailId);
+    }
+
     public ResponseCookie getCleanJwtCookie() {
         return ResponseCookie.from(jwtCookie, null).path("/").build();
     }

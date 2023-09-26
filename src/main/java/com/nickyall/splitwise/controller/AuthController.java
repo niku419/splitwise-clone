@@ -69,7 +69,9 @@ public class AuthController {
                         userDetails.getEmailId(),
                         userDetails.getPhoneNumber(),
                         userDetails.getName(),
-                        roles));
+                        roles,
+                        jwtUtils.getToken(userDetails.getEmailId())
+                ));
     }
 
     @PostMapping("/signup")
@@ -132,6 +134,7 @@ public class AuthController {
                         userDetails.getEmailId(),
                         userDetails.getPhoneNumber(),
                         userDetails.getName(),
-                        dbRoles));
+                        dbRoles,
+                        jwtUtils.getToken(userDetails.getEmailId())));
     }
 }

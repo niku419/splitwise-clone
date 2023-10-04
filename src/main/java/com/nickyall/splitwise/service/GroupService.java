@@ -8,13 +8,12 @@ import com.nickyall.splitwise.repository.GroupRepository;
 import com.nickyall.splitwise.repository.UserRepository;
 import com.nickyall.splitwise.requests.AddUsersToGroupRequest;
 import com.nickyall.splitwise.requests.CreateGroupRequest;
+import com.nickyall.splitwise.requests.DeleteUserFromGroupRequest;
 import com.nickyall.splitwise.response.GroupsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class GroupService {
@@ -87,9 +86,9 @@ public class GroupService {
             final User user = optionalUser.get();
             List<String> userGroupIds = user.getGroupIds();
             if (userGroupIds.size() > 0) {
-                GroupsResponse groupsResponse = new GroupsResponse();
                 for (final String groupId:userGroupIds) {
                     if (groupId != null) {
+                        GroupsResponse groupsResponse = new GroupsResponse();
                         final Optional<Group> group = groupRepository.findById(groupId);
                         if (group.isPresent()) {
                             List<User> users = new ArrayList<>();
@@ -108,10 +107,10 @@ public class GroupService {
                             groupsResponse.setUsers(users);
                             groupsResponse.setName(group.get().getName());
                             groupsResponse.setId(group.get().getId());
+                            groupsResponses.add(groupsResponse);
                         }
                     }
                 }
-                groupsResponses.add(groupsResponse);
             }
         }
         return groupsResponses;
@@ -127,5 +126,20 @@ public class GroupService {
 
     public void save(Group group) {
         groupRepository.save(group);
+    }
+
+    public void deleteGroup(String groupId) {
+        final Optional<Group> group = groupRepository.findById(groupId);
+        group.ifPresent(value -> groupRepository.delete(value));
+    }
+
+    public void deleteUserFromGroup(final DeleteUserFromGroupRequest request) {
+        final Optional<Group> group = groupRepository.findById(request.getGroupId());
+        if (group.isPresent()) {
+            List<String> memberIds =  group.get().getMemberIds();
+            memberIds.removeIf(currentElement -> currentElement.equals(request.getUserId()));
+            group.get().setMemberIds(memberIds);
+            groupRepository.save(group.get());
+        }
     }
 }

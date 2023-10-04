@@ -115,4 +115,9 @@ public class ExpenseService {
         expense.setParticipants(participants);
         return expense;
     }
+
+    public void deleteExpense(final String expenseId) {
+        Optional<Expense> optionalExpense = expenseRepository.findById(expenseId);
+        optionalExpense.ifPresent(expense -> expenseRepository.delete(expense));
+    }
 }

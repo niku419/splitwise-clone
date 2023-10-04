@@ -7,18 +7,14 @@ import com.nickyall.splitwise.model.User;
 import com.nickyall.splitwise.requests.AddUsersToGroupRequest;
 import com.nickyall.splitwise.requests.CreateExpenseRequest;
 import com.nickyall.splitwise.requests.CreateGroupRequest;
+import com.nickyall.splitwise.requests.DeleteUserFromGroupRequest;
 import com.nickyall.splitwise.response.GroupsResponse;
 import com.nickyall.splitwise.service.ExpenseService;
 import com.nickyall.splitwise.service.GroupService;
 import com.nickyall.splitwise.service.RoleService;
 import com.nickyall.splitwise.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -98,5 +94,20 @@ public class SplitwiseController {
     @PostMapping(value = "/groups/{groupId}/addUsers")
     public void addUsersToGroup(@RequestBody AddUsersToGroupRequest addUsersToGroupRequest) {
         groupService.addUsersToGroup(addUsersToGroupRequest);
+    }
+
+    @DeleteMapping(value = "/group/{groupId}/delete")
+    public void deleteGroup(@PathVariable String groupId) {
+        groupService.deleteGroup(groupId);
+    }
+
+    @PostMapping(value = "/group/deleteUser")
+    public void deleteUserFromGroup(@RequestBody DeleteUserFromGroupRequest deleteUserFromGroupRequest) {
+        groupService.deleteUserFromGroup(deleteUserFromGroupRequest);
+    }
+
+    @DeleteMapping(value = "/expenses/{expenseId}/delete")
+    public void deleteExpense(@PathVariable String expenseId) {
+        expenseService.deleteExpense(expenseId);
     }
 }
